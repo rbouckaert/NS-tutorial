@@ -45,7 +45,7 @@ Both BEAST2 and BEAUti2 are Java programs, which means that the exact same code 
 
 We will analyse a set of hepatitis B virus (HBV) sequences samples through time and concentrate on selecting a clock model. The most popular clock models are the strict clock model and uncorrelated relaxed clock with log normal distributed rates (UCLN) model.
 
-## Setting up the analyses
+## Setting up the Strict clock analysis
 
 First thing to do is set up the two analyses in BEAUti, and run them in order to make sure there are differences in the analyses. In BEAUti:
 
@@ -63,6 +63,10 @@ First thing to do is set up the two analyses in BEAUti, and run them in order to
 * save the file as HBVStrict.xml
 * run the analysis with BEAST
 
+>
+> Do you have a clock rate prior in the priors panel? If so, the clock rate is estimated, and you should revisit the part where the clock is set up!
+>
+
 <figure>
 	<a id="fig:auto-config"></a>
 	<img style="width:80.0%;" src="figures/BEAUti-configure-tip-dates.png" alt="">
@@ -76,6 +80,8 @@ First thing to do is set up the two analyses in BEAUti, and run them in order to
 	<figcaption>Figure 2: Priors panel for strict clock analysis in BEAUti</figcaption>
 </figure>
 <br>
+
+## Setting up the relaxed clock analysis
 
 While you are waiting for BEAST to finish, it is time to set up the relaxed clock analysis. This is now straightforward:
 * in the clock model panel, change "Strict clock" to "Relaxed Clock Log Normal".
@@ -107,159 +113,158 @@ To use nested sampling, first have to install the NS (version {{ page.nsversion 
 </figure>
 <br>
 
+## Setting up the nested sampling analyses
 
--------
-
-# Tutorial style guide
-
-## Text styling
-
-This is how to write _italic text_.
-
-This is how to write **bold text**.
-
-This is how to write **_bold and italic text_**.
-
-Do text superscripts like this 7^th, x^2y or  x^(2y + 3z).
-
-
-## Lists
-
-### Unnumbered lists
-
-- Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-- Integer pharetra arcu ut nisl mollis ultricies.
-	- Fusce nec tortor at enim cursus dictum.
-	- Phasellus nec urna quis velit eleifend convallis sodales nec augue.
-- In iaculis turpis in massa facilisis, quis ultricies nibh ultricies.
-- Nam vitae turpis eu lacus imperdiet mollis id at augue.
-- Sed sed turpis ac dolor mollis accumsan.
-
-
-### Numbered lists
-
-1. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-2. Integer pharetra arcu ut nisl mollis ultricies.
-	1. Fusce nec tortor at enim cursus dictum.
-	2. Phasellus nec urna quis velit eleifend convallis sodales nec augue.
-1. In iaculis turpis in massa facilisis, quis ultricies nibh ultricies.
-1. Nam vitae turpis eu lacus imperdiet mollis id at augue.
-1. Sed sed turpis ac dolor mollis accumsan.
-
-### Mixed lists
-
-1. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-2. Integer pharetra arcu ut nisl mollis ultricies.
-	* Fusce nec tortor at enim cursus dictum.
-	* Phasellus nec urna quis velit eleifend convallis sodales nec augue.
-1. In iaculis turpis in massa facilisis, quis ultricies nibh ultricies.
-1. Nam vitae turpis eu lacus imperdiet mollis id at augue.
-1. Sed sed turpis ac dolor mollis accumsan.
-
-
-## Figures
-
-
-<figure>
-	<a id="fig:example1"></a>
-	<img style="width:25%;" src="figures/Logo_bw.png" alt="">
-	<figcaption>Figure 1: This figure is 25% of the page width.</figcaption>
-</figure>
-
-
-<figure>
-	<a id="fig:example2"></a>
-	<img style="width:10%;" src="figures/Logo_bw.png" alt="">
-	<figcaption>Figure 2: This figure is only 10% of the page width.</figcaption>
-</figure>
-
-
-
-# Code
-
-A bit of inline monospaced font can be made `like this`. Larger code blocks can be made by using the code environment:
-
-Java:
-
-```java
-public class HelloWorld {
-
-    public static void main(String[] args) {
-        // Prints "Hello, World" to the terminal window.
-        System.out.println("Hello, World");
-    }
-
-}
-```
-
-XML:
-
+* copy the files HBVStrict.xml to HBVStric-NS.xml and HBVUCLN.xml to HBVUCLN-NS.xml
+* start a text editor and in both NS files, change
 ```xml
-	<BirthDeathSkylineModel spec="BirthDeathSkylineModel" id="birthDeath" tree="@tree" contemp="true">
-	      <parameter name="origin" id="origin" value ="100" lower="0."/>    
-	      <parameter name="R0" id="R0" value="2" lower="0." dimension ="10"/>
-	      <parameter name="becomeUninfectiousRate" id="becomeUninfectiousRate" value="1" lower="0." dimension ="10"/>
-	      <parameter name="samplingProportion" id="samplingProportion" value="0."/>
-	      <parameter name="rho" id="rho" value="1e-6" lower="0." upper="1."/>
-	</BirthDeathSkylineModel>
+<run id="mcmc" spec="MCMC" chainLength="1000000">
+```
+to
+```xml
+<run id="mcmc" spec="beast.gss.NS" chainLength="20000" particleCount="1" subChainLength="5000">
+```
+Here the `particeCount` represents the number of active points used in nested sampling: the more points used, the more accurate the estimate, but the longer the analysis takes. The `subChainLength` is the number of MCMC samples taken to get a new point that is independent (enough) from the point that is saved. Longer lengths mean longer runs, but also more independent samples. In practice, running with different `subChainLength` is necessary to find out which length is most suitable (see [FAQ](#Nested-sampling-FAQ)).
+* change the file names for the trace and tree log to include `NS`.
+* save the files, and run with BEAST.
+
+
+The end of the BEAST run for nested sampling with the strict clock should look something like this:
+```
+Total calculation time: 34.146 seconds
+End likelihood: -202.93224422946253
+Producing posterior samples
+
+Marginal likelihood: -12438.35758179847 sqrt(H/N)=(11.084732655710818)=?=SD=(11.008249475863373) Information: 122.87129804858182
+Max ESS: 6.706301939836118
+
+
+Processing 248 trees from file.
+Log file written to HBVStrict-NS.posterior.trees
+Done!
+
+Marginal likelihood: -12437.767705819117 sqrt(H/N)=(11.05930077842042)=?=SD=(11.71074051847201) Information: 122.3081337075705
+Max ESS: 6.490414156277384
+
+
+Log file written to HBVStrict-NS.posterior.log
+Done!
 ```
 
-R:
+and for the relaxed clock:
 
-```R
-	> myString <- "Hello, World!"
-	> print (myString)
-	[1] "Hello, World!"
+```
+Total calculation time: 38.541 seconds
+End likelihood: -200.7794173971489
+Producing posterior samples
+
+Marginal likelihood: -12428.557546706481 sqrt(H/N)=(11.22272275528845)=?=SD=(11.252847709777592) Information: 125.94950604206919
+Max ESS: 5.874085822198268
+
+
+Processing 257 trees from file.
+Log file written to HBVUCLN-NS.posterior.trees
+Done!
+
+Marginal likelihood: -12428.480923049345 sqrt(H/N)=(11.220392192278625)=?=SD=(11.491864352217954) Information: 125.89720094854714
+Max ESS: 5.940996269769591
+
+
+Log file written to HBVUCLN-NS.posterior.log
+Done!
 ```
 
-# Equations
+As you can see, nested sampling produces estimates of the marginal likelihood as well as standard deviation estimates. At first sight, the relaxed clock has a log marginal likelihood estimate of about -12428, while the strict clock is much worse at about -12438. However, the standard deviation of both runs is about 11, so that makes these estimates indistinguishable.
 
-Inline equations: {% eqinline \dot{x} = \sigma(y-x) %}
+To get more accurate estimates, the number of particles can be increased. The expected SD is sqrt(H/N) where N is the number of particles and H the information. The information H is conveniently estimated in the nested sampling run as well.
+To aim for an SD of say 2, we need to run again with N particles such that 2=sqrt(125/N), which means 4=125/N, so N=125/4 and N=32 will do. Note that the computation time of nested sampling is linear in the number of particles, so it will take about 32 times longer to run if we change the particleCount from 1 to 32 in the XML.
 
-Displayed equations: 
-{% eq \left( \sum_{k=1}^n a_k b_k \right)^2 \leq \left( \sum_{k=1}^n a_k^2 \right) \left( \sum_{k=1}^n b_k^2 \right) %}
-
-
-
-## Instruction boxes
-
-Use block-quotes for step-by-step instruction that the user should perform (this will produce a framed box on the website):
-
-> The data we have is not the data we want, and the data we need is not the data we have.
-> 
-> We can input **any** formatted text in here:
->
-> - Even
-> - Lists
->
-> or equations:
->
-> {% eq (x_1, \ldots, x_n) \left( \begin{array}{ccc}
-      \phi(e_1, e_1) & \cdots & \phi(e_1, e_n) \\
-      \vdots & \ddots & \vdots \\
-      \phi(e_n, e_1) & \cdots & \phi(e_n, e_n)
-    \end{array} \right)
-  \left( \begin{array}{c}
-      y_1 \\
-      \vdots \\
-      y_n
-    \end{array} \right) %}
+A pre-cooked run with 32 particles can be found here: [https://github.com/rbouckaert/NS-tutorial/precooked_runs](https://github.com/rbouckaert/NS-tutorial/precooked_runs). Download the files *NS32.log and run the `NSLogAnalyser` application to analyse the results. To start the `NSLogAnalyser` from the command line, use
+```
+applauncher NSLogAnalyser -noposterior -N 32 -log /path/to/HBVStrict-NS32.log
+applauncher NSLogAnalyser -noposterior -N 32 -log /path/to/HBVUCLN-NS32.log
+```
+or from BEAUti, click menu `File/Launch apps`, select `NSLogAnalyser` and fill in the form in the GUI.
 
 
 
+## Setting up the geographic model with strict and relaxed clock
+
+* Install the GEO_SPHERE package.
+* Go to the data partitions tab, and click the '+' button at the bottom of the screen.
+A dialog pops up where you can select what you want to add. Choose `Add Spherical Geography` and click `OK`.
+* A new window pops up where you can choose the tree where you want to add geography.
+Also, you can change the trait name to `geo`;
+* When you click OK, a dialog is shown where you can enter latitude and longitude for each taxon. In this tutorial, this information is encoded in the taxon name, so we can guess it from the name. 
+	* Click `Guess latitude`, and a dialog is shown. Choose `split on character` and take group 3 for the latitude. When you click OK, the latitude field of the table is populated.
+	* Click `Guess longitude`, and again a dialog is shown. Choose `split on character` and take group 4 for the longitude.
+	When you click OK, the table is completely populated. 
+* Now, the longitudes and latitudes are properly populated. Click close, and a second data partition is created.
+* The clock model now looks like this:
+* For the geography, we select a strict clock for the first analysis (save as `HBVgeoStrict.xml`) and a relaxed clock with log-normal distribution for the second analysis) save as `HBVgeoUCLN.xml`). 
+* As before, copy the files to a name including NS and in a text editor change
+```xml
+<run id="mcmc" spec="MCMC" chainLength="1000000">
+```
+to
+```xml
+<run id="mcmc" spec="beast.gss.NS" chainLength="20000" particleCount="1" subChainLength="5000">
+```
+* Save both files, and run with BEAST.
 
 
 
-# Hyperlinks
 
-Add links to figures like this: 
+# Nested sampling FAQ
 
-- [Figure 1](#fig:example1) is 25% of the page width.
-- [Figure 2](#fig:example2) is 10% of the page width. 
+## The analysis prints out multiple ML estimates with their SDs. Which one to choose?
 
-Add links to external URLs like [this](http://www.google.com). 
+The difference between the estimates is the way they are estimated from the nested sampling run. Since these are estimates that require random sampling, they differ from one estimate to another. When the standard deviation is small, the estimates will be very close, but when the standard deviations is quite large, the ML estimates can substantially differ. Regardless, any of the reported estimates are valid estimates, but make sure to report them with their standard deviation.
 
-Links to equations or different sections within the same document are a little buggy.
+
+## How do I know the sub-chain length is large enough?
+
+NS works in theory if and only if the points generated at each iteration are independent. If you already did an MCMC run and know the effective sample size (ESS) for each parameter, to be sure every parameter in every sample is independent you can take the length of the MCMC run divided by the smallest ESS as sub-chain length. This tend to result in quite large sub-chain lengths.
+
+In practice, we can get away much smaller sub-chain lengths, which you can verify by running multiple NS analysis with increasing sub-chain lengths. If the ML and SD estimates do not substantially differ, you know the shorter sub-chain length was sufficient.
+
+
+## How many particles do I need?
+
+To start, use only a few particles. This should give you a sense of the information `H`, which is one of the estimates provided by the NS analysis. If you want to compare two hypotheses, you want the difference between `ML1` and `ML2` to be at least `2*sqrt(SD1*SD1+SD2*SD2)` in order to make sure the difference is not due to randomisation.
+
+If the difference is larger, you do not need more particles.
+
+If the difference is smaller, you can guess how much the SD estimates must shrink to get a difference that is sufficiently large. Since the `SD=sqrt(H/N)`, we have that `N=H/(SD*SD)` and `H` comes from the NS run with a few particles. Run the analysis again, with the increased number of particles, and see if the difference becomes large enough.
+
+If the difference is less than 2, the hypotheses may not be distinguishable -- in terms of Bayes factors, are barely worth mentioning.
+
+
+## Is NS faster than path sampling/stepping stone (PS/SS)?
+
+This depends on many things, but in general, depends on how accurate the estimates should be. For NS, we get an estimate of the SD, which is not available for PS/SS. If the hypotheses have very large differences in MLs, NS requires very few (maybe just 1) particle, and will be very fast. If differences are smaller, more particles may be required, and the run-time of NS is linear in the number of particles.
+
+The parallel implementation makes it possible to run many particles in parallel, giving a many-particle estimate in the same time as a single particle estimate (PS/SS can be parallelised by steps as well).
+
+## The output is written on screen, which I forgot to save. Can I estimate them directly from the log files?
+
+The NS package has a `NSLogAnalyser` application that you can run via the menu `File/Launch apps` in BEAUti -- a window pops up where you select the `NSLogAnalyser`, and a dialog shows you various options to fill in. You can also run it from the command line on OS X or Linux using
+
+`/path/to/beast/bin/applauncher NSLogAnalyser -N 1 -log  xyz.log`
+
+where the argument after `N` is the `particleCount` you specified in the XML, and `xyz.log` the trace log produced by the NS run.
+
+
+## Why are some NS runs longer than others?
+
+Nested sampling stops automatically when the accuracy in the ML estimate cannot be improved upon. Because it is a stochastic process, some analyses get there faster than others, resulting in different run times.
+
+
+## Why are the ESSs so low when I open a log file in Tracer?
+
+An NS analysis produces two trace log files: one for the nested sampling run (say `myFile.log`) and one with the posterior sample (`myFile.posterior.log`).
+
+The ESSs in Tracer of log files with the posterior samples are meaningless, because the log file is ordered using the nested sampling run. If you look at the trace of the Likelihood, it should show a continuous increasing function. It is not quite clear how to estimate ESSs of a nested sampling run yet, though the number of entries in the posterior log is equal to the maximum theoretical ESS, which is almost surely an overestimate.
 
 
 ----
@@ -268,7 +273,7 @@ Links to equations or different sections within the same document are a little b
 
 - [Bayesian Evolutionary Analysis with BEAST 2](http://www.beast2.org/book.html) {% cite BEAST2book2014 --file Tutorial-Template/master-refs.bib %}
 - BEAST 2 website and documentation: [http://www.beast2.org/](http://www.beast2.org/)
-- BEAST 1 website and documentation: [http://beast.bio.ed.ac.uk](http://beast.bio.ed.ac.uk)
+- Nested sampling website and documentation: [https://github.com/BEAST2-Dev/nested-sampling](https://github.com/BEAST2-Dev/nested-sampling)
 - Join the BEAST user discussion: [http://groups.google.com/group/beast-users](http://groups.google.com/group/beast-users) 
 
 ----
