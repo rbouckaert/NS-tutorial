@@ -184,10 +184,51 @@ A pre-cooked run with 32 particles can be found here: [https://github.com/rbouck
 applauncher NSLogAnalyser -noposterior -N 32 -log /path/to/HBVStrict-NS32.log
 applauncher NSLogAnalyser -noposterior -N 32 -log /path/to/HBVUCLN-NS32.log
 ```
-or from BEAUti, click menu `File/Launch apps`, select `NSLogAnalyser` and fill in the form in the GUI.
+or from BEAUti, click menu `File/Launch apps`, select `NSLogAnalyser` and fill in the form in the GUI. The output for the strict clock analysis should be something like this:
+
+```
+Loading HBVStrict-NS32.log, burnin 0%, skipping 0 log lines
+
+|---------|---------|---------|---------|---------|---------|---------|---------|
+******************************
+
+Marginal likelihood: -12426.207750474812 sqrt(H/N)=(1.8913059067381148)=?=SD=(1.8374367294317693) Information: 114.46521705159945
+Max ESS: 400.41214209052896
+
+Calculating statistics
+
+|---------|---------|---------|---------|---------|---------|---------|---------|
+********************************************************************************
+
+#Particles = 32
+item               mean     stddev   
+posterior          -12512.7 2.988107
+likelihood         -12311.7 2.91633 
+prior              -201.009 1.580207
+treeLikelihood     -12311.7 2.91633 
+TreeHeight         3443.955 134.1921
+kappa              2.679169 0.151243
+popSize            2337.454 290.0407
+CoalescentConstant -163.191 3.090671
+freqParameter.1    0.240033 0.005884
+freqParameter.2    0.267856 0.006814
+freqParameter.3    0.217084 0.006638
+freqParameter.4    0.275027 0.006716
+Done!
+```
+
+So, that gives us a ML estimate of -12426.2 with SD of 1.89, slightly better than the 2 we thought was acceptable.
+
+For the relaxed clock analysis, we get something like:
+
+```
+Marginal likelihood: -12417.389793288146 sqrt(H/N)=(1.9543337689486355)=?=SD=(1.9614418034828585) Information: 122.2214553744953
+```
+so an ML of -12417.4 with SD of 1.95. Therefor the log BF is -12417.4 - -12426.2 = 8.8, which is more than twice the sum of the SDs, so can be considered reliable evidence in favour of the relaxed clock model. Note that judging from the table at the start of the tutorial, this amounts to overwhelming support for the relaxed clock.
 
 
 
+<!--
 ## Setting up the geographic model with strict and relaxed clock
 
 * Install the GEO_SPHERE package.
@@ -211,7 +252,7 @@ to
 <run id="mcmc" spec="beast.gss.NS" chainLength="20000" particleCount="1" subChainLength="5000">
 ```
 * Save both files, and run with BEAST.
-
+-->
 
 
 
