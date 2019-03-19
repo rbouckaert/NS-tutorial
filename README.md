@@ -14,9 +14,7 @@ BEAST provides a bewildering number of models. Bayesians have two techniques to 
 
 Bayesian model selection is based on estimating the marginal likelihood: the term forming the denominator in Bayes formula. This is generally a computationally intensive task and  there are several ways to estimate them. Here, we concentrate on nested sampling as a way to estimate the marginal likelihood as well as the uncertainty in that estimate.
 
-Say, we have two models, M1 and M2, and estimates of the (log) marginal likelihood, ML1 and ML2, then we can calculate the Bayes factor, which is the fraction BF=ML1/ML2 (or in log space, the difference log(BF) = log(ML1)-log(ML2)). If BF is larger than 1, model M1 is favoured, and otherwise M2 is favoured. How much it is favoured can be found in the following table ([Kass 1995](#kass1995bayes)
-[//]: # ( {% cite kass1995bayes --file NS-tutorial/master-refs.bib %})
-):
+Say, we have two models, M1 and M2, and estimates of the (log) marginal likelihood, ML1 and ML2, then we can calculate the Bayes factor, which is the fraction BF=ML1/ML2 (or in log space, the difference log(BF) = log(ML1)-log(ML2)). If BF is larger than 1, model M1 is favoured, and otherwise M2 is favoured. How much it is favoured can be found in the following table ([Kass 1995](#kass1995bayes)):
 
 <img style="width:80.0%;" src="figures/BFs.png" alt="">
 
@@ -39,7 +37,7 @@ So, the main parameters of the algorithm are the number of particles `N` and the
 
 ### BEAST2 - Bayesian Evolutionary Analysis Sampling Trees 2
 
-BEAST2 is a free software package for Bayesian evolutionary analysis of molecular sequences using MCMC and strictly oriented toward inference using rooted, time-measured phylogenetic trees [Bouckaert et al, 2014](#Bouckaert2014), [2019](#bouckaert2018beast) [//]: # ( {% cite Bouckaert2014,bouckaert2018beast --file NS-tutorial/master-refs.bib %} ). This tutorial uses the BEAST2 version 2.5.2.
+BEAST2 is a free software package for Bayesian evolutionary analysis of molecular sequences using MCMC and strictly oriented toward inference using rooted, time-measured phylogenetic trees ([Bouckaert et al, 2014](#Bouckaert2014), [Bouckaert et al. 2019](#bouckaert2018beast)). This tutorial uses the BEAST2 version 2.5.2.
 
 ### BEAUti2 - Bayesian Evolutionary Analysis Utility
 
@@ -112,7 +110,7 @@ Once the analyses have run, open the log file in Tracer and compare estimates an
 > Which analysis is preferable and why? 
 <!-- depends on the question you want to answer: if tree height is of interest, strict clock is preferred, since it reduces the uncertainty. If kappa is of interest, things are not that different -->
 
-If there are no substantial differences between the analysis for the question you are interested in, you do not have to commit to one model or another, and you can claim that the results are robust under different models. However, if there are significant differences, you may want to do a formal test to see which model is preferred over other models. In a Bayesian context, in practice this comes down to estimating the marginal likelihood, and calculating Bayes factors: the ratios of marginal likelihoods. Nested sampling [Maturana, 2018](#russel2018model)[//]: # ( {% cite russel2018model --file NS-tutorial/master-refs.bib %} ) is one way to estimate marginal likelihoods. 
+If there are no substantial differences between the analysis for the question you are interested in, you do not have to commit to one model or another, and you can claim that the results are robust under different models. However, if there are significant differences, you may want to do a formal test to see which model is preferred over other models. In a Bayesian context, in practice this comes down to estimating the marginal likelihood, and calculating Bayes factors: the ratios of marginal likelihoods. Nested sampling ([Maturana et al, 2018](#russel2018model)) is one way to estimate marginal likelihoods. 
 
 ## Installing the NS Package
 
@@ -328,7 +326,6 @@ The ESSs in Tracer of log files with the posterior samples are meaningless, beca
 # Useful Links
 
 - [Bayesian Evolutionary Analysis with BEAST 2](http://www.beast2.org/book.html) [Drummond 2014](#BEAST2book2014) 
-[//]: # ( {% cite BEAST2book2014 --file NS-tutorial/master-refs.bib %} )
 - BEAST 2 website and documentation: [http://www.beast2.org/](http://www.beast2.org/)
 - Nested sampling website and documentation: [https://github.com/BEAST2-Dev/nested-sampling](https://github.com/BEAST2-Dev/nested-sampling)
 - Join the BEAST user discussion: [http://groups.google.com/group/beast-users](http://groups.google.com/group/beast-users) 
@@ -339,12 +336,12 @@ The ESSs in Tracer of log files with the posterior samples are meaningless, beca
 
 <!--{% bibliography --cited --file NS-tutorial/master-refs.bib %}-->
 
-<a name="Bouckaert2014">Remco Bouckaert, Joseph Heled, Denise Kuhnert, Tim Vaughan, Chieh-Hsi Wu, Dong Xie, Marc A Suchard, Andrew Rambaut, and Alexei J Drummond. Beast 2: a software platform for bayesian evolutionary analysis. PLoS computational biology, 10(4):e1003537, apr 2014.</a>
+* <a name="Bouckaert2014">Remco Bouckaert, Joseph Heled, Denise Kuhnert, Tim Vaughan, Chieh-Hsi Wu, Dong Xie, Marc A Suchard, Andrew Rambaut, and Alexei J Drummond. Beast 2: a software platform for bayesian evolutionary analysis. PLoS computational biology, 10(4):e1003537, apr 2014.</a>
 
-<a name="bouckaert2018beast">Remco Bouckaert, Timothy G Vaughan, Joelle Barido-Sottani, Sebastian Duchene, Mathieu Fourment, Alexandra Gavryushkina, Joseph Heled, Gra- ham Jones, Denise Kuhnert, Nicola De Maio, et al. Beast 2.5: An advanced software platform for bayesian evolutionary analysis. PLoS computational biology, 2019.</a>
+* <a name="bouckaert2018beast">Remco Bouckaert, Timothy G Vaughan, Joelle Barido-Sottani, Sebastian Duchene, Mathieu Fourment, Alexandra Gavryushkina, Joseph Heled, Gra- ham Jones, Denise Kuhnert, Nicola De Maio, et al. Beast 2.5: An advanced software platform for bayesian evolutionary analysis. PLoS computational biology, 2019.</a>
 
-<a name="BEAST2book2014">Alexei J. Drummond and Remco R. Bouckaert. Bayesian evolutionary analysis with BEAST 2. Cambridge University Press, 2014.</a>
+* <a name="BEAST2book2014">Alexei J. Drummond and Remco R. Bouckaert. Bayesian evolutionary analysis with BEAST 2. Cambridge University Press, 2014.</a>
 
-<a name="kass1995bayes">Robert E Kass and Adrian E Raftery. Bayes factors. Journal of the american statistical association, 90(430):773–795, 1995.</a>
+* <a name="kass1995bayes">Robert E Kass and Adrian E Raftery. Bayes factors. Journal of the american statistical association, 90(430):773–795, 1995.</a>
 
-<a name="russel2018model">Patricio Maturana Russel, Brendon J Brewer, Steffen Klaere, and Remco R Bouckaert. Model selection and parameter inference in phylogenetics using nested sampling. Systematic biology, 68(2):219–233, 2018.</a>
+* <a name="russel2018model">Patricio Maturana Russel, Brendon J Brewer, Steffen Klaere, and Remco R Bouckaert. Model selection and parameter inference in phylogenetics using nested sampling. Systematic biology, 68(2):219–233, 2018.</a>
