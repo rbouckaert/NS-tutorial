@@ -14,11 +14,21 @@ BEAST provides a bewildering number of models. Bayesians have two techniques to 
 
 Bayesian model selection is based on estimating the marginal likelihood: the term forming the denominator in Bayes formula. This is generally a computationally intensive task and  there are several ways to estimate them. Here, we concentrate on nested sampling as a way to estimate the marginal likelihood as well as the uncertainty in that estimate.
 
-Say, we have two models, M1 and M2, and estimates of the (log) marginal likelihood, ML1 and ML2, then we can calculate the Bayes factor, which is the fraction BF=ML1/ML2 (or in log space, the difference log(BF) = log(ML1)-log(ML2)). If BF is larger than 1, model M1 is favoured, and otherwise M2 is favoured. How much it is favoured can be found in the following table ({% cite kass1995bayes --file Tutorial-Template/master-refs.bib %})
+Say, we have two models, M1 and M2, and estimates of the (log) marginal likelihood, ML1 and ML2, then we can calculate the Bayes factor, which is the fraction BF=ML1/ML2 (or in log space, the difference log(BF) = log(ML1)-log(ML2)). If BF is larger than 1, model M1 is favoured, and otherwise M2 is favoured. How much it is favoured can be found in the following table ({% cite kass1995bayes --file NS-tutorial/master-refs.bib %})
 
 <img style="width:80.0%;" src="figures/BFs.png" alt="">
 
 Note that sometimes a factor 2 is used for multiplying BFs, so when comparing BFs from different publications, be aware which definition that was used.
+
+
+**Nested sampling** is an algorithm that works as follows:
+
+* randomly sample `N` points from the prior
+* while not coverged
+	* pick the point with the lowest likelihood Lmin, and save to log file
+	* replace the point with a new point randomly sampled from the prior using an MCMC chain of `subChainLength` samples __under the condition that the likelihood is at least Lmin__
+
+So, the main parameters of the algorithm are the number of particles `N` and the `subChainLength`. `N` can be determined by starting with `N=1` and from the information of that run a target standard deviation can be determined, which gives us a formula to determine `N` (as we will see later in the tutorial). The `subChainLength` determines how independent the replacement point is from the point that was saved, and is the only parameter that needs to be determined by trial and error -- see [FAQ](#Nested-sampling-FAQ) for details.
 
 
 ----
@@ -27,7 +37,7 @@ Note that sometimes a factor 2 is used for multiplying BFs, so when comparing BF
 
 ### BEAST2 - Bayesian Evolutionary Analysis Sampling Trees 2
 
-BEAST2 is a free software package for Bayesian evolutionary analysis of molecular sequences using MCMC and strictly oriented toward inference using rooted, time-measured phylogenetic trees {% cite Bouckaert2014,bouckaert2018beast --file Tutorial-Template/master-refs.bib %}. This tutorial uses the BEAST2 version 2.5.2.
+BEAST2 is a free software package for Bayesian evolutionary analysis of molecular sequences using MCMC and strictly oriented toward inference using rooted, time-measured phylogenetic trees {% cite Bouckaert2014,bouckaert2018beast --file NS-tutorial/master-refs.bib %}. This tutorial uses the BEAST2 version 2.5.2.
 
 ### BEAUti2 - Bayesian Evolutionary Analysis Utility
 
@@ -43,26 +53,26 @@ Both BEAST2 and BEAUti2 are Java programs, which means that the exact same code 
 
 # Practical: Selecting a clock model
 
-We will analyse a set of hepatitis B virus (HBV) sequences sampled through time and concentrate on selecting a clock model. The alignment can be downloaded here: [https://raw.githubusercontent.com/rbouckaert/NS-tutorial/master/data/HBV.nex](https://raw.githubusercontent.com/rbouckaert/NS-tutorial/master/data/HBV.nex).
+We will analyse a set of hepatitis B virus (HBV) sequences sampled through time and concentrate on selecting a clock model. 
 The most popular clock models are the strict clock model and uncorrelated relaxed clock with log normal distributed rates (UCLN) model.
 
 ## Setting up the Strict clock analysis
 
-First thing to do is set up the two analyses in BEAUti, and run them in order to make sure there are differences in the analyses. In BEAUti:
+First thing to do is set up the two analyses in BEAUti, and run them in order to make sure there are differences in the analyses. The alignment can be downloaded here: [https://raw.githubusercontent.com/rbouckaert/NS-tutorial/master/data/HBV.nex](https://raw.githubusercontent.com/rbouckaert/NS-tutorial/master/data/HBV.nex). We will set up a model with tip dates, HKY substitution model, Coalescent prior with constant population, and a fixed clock rate. In BEAUti:
 
-* start a new analysis using the Standard template
-* import [HBV.nex](https://raw.githubusercontent.com/rbouckaert/NS-tutorial/master/data/HBV.nex) using menu `File > Import alignment`
+* Start a new analysis using the Standard template.
+* Import [HBV.nex](https://raw.githubusercontent.com/rbouckaert/NS-tutorial/master/data/HBV.nex) using menu `File > Import alignment`.
 * In the tip-dates panel, select `tip dates`, click `Auto configure` and select the `split on character` option, taking group 2 (see [Fig 1](#fig:auto-config)).
 * In the site model panel, select `HKY` as substitution model and leave the rest as is.
 * In the clock model panel, set the clock rate to 2e-5. Though usually, we want to estimate the rate, to speed things up for the tutorial, we fix the clock rate at that number as follows:
     * Uncheck menu `Mode > Automatic set clock rate`. Now the estimate entry should not be grayed out any more.
     * Uncheck the `estimate` box next to the clock rate entry.
 * In the priors panel, select `Coalescent Constant Population` as tree prior.
-* Also in the priors panel, change to `popSize` prior to `Gamma` with alpha = 0.01, beta = 100 ([Fig 2](#fig:prior))
+* Also in the priors panel, change to `popSize` prior to `Gamma` with alpha = 0.01, beta = 100 ([Fig 2](#fig:prior)).
 * In the MCMC panel, change the `Chain Length` to 1 million.
 * You can rename the file for trace log and tree file to include "Strict" to distinguish them for the relaxed clock ones.
-* Save the file as `HBVStrict.xml`
-* Run the analysis with BEAST
+* Save the file as `HBVStrict.xml`. ** Do not close BEAUti just yet!**
+* Run the analysis with BEAST.
 
 >
 > Do you have a clock rate prior in the priors panel? If so, the clock rate is estimated, and you should revisit the part where the clock is set up!
@@ -84,12 +94,12 @@ First thing to do is set up the two analyses in BEAUti, and run them in order to
 
 ## Setting up the relaxed clock analysis
 
-While you are waiting for BEAST to finish, it is time to set up the relaxed clock analysis. This is now straightforward:
-* in the clock model panel, change `Strict clock` to `Relaxed Clock Log Normal`.
-* set the clock rate to 2e-5, and uncheck the `estimate` box.
-* in the MCMC panel, replace `Strict` in the file names for trace and tree log to `UCLN`.
-* save file as `HBVUCLN.xml` **Do not click the `File > Save` menu, but `File > Save as`, otherwise the strict clock XML file will be overwritten**
-* run the analysis in BEAST
+While you are waiting for BEAST to finish, it is time to set up the relaxed clock analysis. This is now straightforward if BEAUti is still open (if BEAUti was closed, open BEAUti, and load the file `HBVStrict.xml` through the menu `File > Load`):
+* In the clock model panel, change `Strict clock` to `Relaxed Clock Log Normal`.
+* Set the clock rate to 2e-5, and uncheck the `estimate` box.
+* In the MCMC panel, replace `Strict` in the file names for trace and tree log to `UCLN`.
+* Save file as `HBVUCLN.xml` **Do not click the `File > Save` menu, but `File > Save as`, otherwise the strict clock XML file will be overwritten**
+* Run the analysis in BEAST
 
 Once the analyses have run, open the log file in Tracer and compare estimates and see whether the analyses substantially differ. You can also compare the trees in DensiTree.
 
@@ -98,7 +108,7 @@ Once the analyses have run, open the log file in Tracer and compare estimates an
 > Which analysis is preferable and why? 
 <!-- depends on the question you want to answer: if tree height is of interest, strict clock is preferred, since it reduces the uncertainty. If kappa is of interest, things are not that different -->
 
-If there are no substantial differences between the analysis for the question you are interested in, you do not have to commit to one model or another, and you can claim that the results are robust under different models. However, if there are significant differences, you may want to do a formal test to see which model is preferred over other models. In a Bayesian context, in practice this comes down to estimating the marginal likelihood, and calculating Bayes factors: the ratios of marginal likelihoods. Nested sampling {% cite russel2018model --file Tutorial-Template/master-refs.bib %} is one way to estimate marginal likelihoods. 
+If there are no substantial differences between the analysis for the question you are interested in, you do not have to commit to one model or another, and you can claim that the results are robust under different models. However, if there are significant differences, you may want to do a formal test to see which model is preferred over other models. In a Bayesian context, in practice this comes down to estimating the marginal likelihood, and calculating Bayes factors: the ratios of marginal likelihoods. Nested sampling {% cite russel2018model --file NS-tutorial/master-refs.bib %} is one way to estimate marginal likelihoods. 
 
 ## Installing the NS Package
 
@@ -312,7 +322,7 @@ The ESSs in Tracer of log files with the posterior samples are meaningless, beca
 
 # Useful Links
 
-- [Bayesian Evolutionary Analysis with BEAST 2](http://www.beast2.org/book.html) {% cite BEAST2book2014 --file Tutorial-Template/master-refs.bib %}
+- [Bayesian Evolutionary Analysis with BEAST 2](http://www.beast2.org/book.html) {% cite BEAST2book2014 --file NS-tutorial/master-refs.bib %}
 - BEAST 2 website and documentation: [http://www.beast2.org/](http://www.beast2.org/)
 - Nested sampling website and documentation: [https://github.com/BEAST2-Dev/nested-sampling](https://github.com/BEAST2-Dev/nested-sampling)
 - Join the BEAST user discussion: [http://groups.google.com/group/beast-users](http://groups.google.com/group/beast-users) 
@@ -321,5 +331,5 @@ The ESSs in Tracer of log files with the posterior samples are meaningless, beca
 
 # Relevant References
 
-{% bibliography --cited --file Tutorial-Template/master-refs.bib %}
+{% bibliography --cited --file NS-tutorial/master-refs.bib %}
 
