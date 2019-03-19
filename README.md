@@ -43,25 +43,26 @@ Both BEAST2 and BEAUti2 are Java programs, which means that the exact same code 
 
 # Practical: Selecting a clock model
 
-We will analyse a set of hepatitis B virus (HBV) sequences samples through time and concentrate on selecting a clock model. The most popular clock models are the strict clock model and uncorrelated relaxed clock with log normal distributed rates (UCLN) model.
+We will analyse a set of hepatitis B virus (HBV) sequences sampled through time and concentrate on selecting a clock model. The alignment can be downloaded here: [https://raw.githubusercontent.com/rbouckaert/NS-tutorial/master/data/HBV.nex](https://raw.githubusercontent.com/rbouckaert/NS-tutorial/master/data/HBV.nex).
+The most popular clock models are the strict clock model and uncorrelated relaxed clock with log normal distributed rates (UCLN) model.
 
 ## Setting up the Strict clock analysis
 
 First thing to do is set up the two analyses in BEAUti, and run them in order to make sure there are differences in the analyses. In BEAUti:
 
 * start a new analysis using the Standard template
-* import HBV.nex (menu File/Import alignment)
-* In the tip-dates panel, select "tip dates", click "Auto configure" and select the "split on character" option, taking group 2 (see [Fig 1](#fig:auto-config)).
-* in the site model panel, select HKY as substitution model and leave the rest as is.
-* in the clock model panel, set the clock rate to 2e-5. Though usually, we want to estimate the rate, to speed things up for the tutorial, we fix the clock rate at that number as follows:
-    * uncheck menu "Mode/Automatic set clock rate". Now the estimate entry should not be grayed out any more.
-    * uncheck the "estimate" box next to the clock rate entry.
-* in the priors panel, select "Coalescent Constant Population" as tree prior.
-* also in the priors panel, change to popSize prior to Gamma with alpha = 0.01, beta = 100 ([Fig 2](#fig:prior))
-* in the MCMC panel, change the Chain Length to 1 million.
-* you can rename the file for trace log and tree file to include "Strict" to distinguish them for the relaxed clock ones.
-* save the file as HBVStrict.xml
-* run the analysis with BEAST
+* import [HBV.nex](https://raw.githubusercontent.com/rbouckaert/NS-tutorial/master/data/HBV.nex) using menu `File > Import alignment`
+* In the tip-dates panel, select `tip dates`, click `Auto configure` and select the `split on character` option, taking group 2 (see [Fig 1](#fig:auto-config)).
+* In the site model panel, select `HKY` as substitution model and leave the rest as is.
+* In the clock model panel, set the clock rate to 2e-5. Though usually, we want to estimate the rate, to speed things up for the tutorial, we fix the clock rate at that number as follows:
+    * Uncheck menu `Mode > Automatic set clock rate`. Now the estimate entry should not be grayed out any more.
+    * Uncheck the `estimate` box next to the clock rate entry.
+* In the priors panel, select `Coalescent Constant Population` as tree prior.
+* Also in the priors panel, change to `popSize` prior to `Gamma` with alpha = 0.01, beta = 100 ([Fig 2](#fig:prior))
+* In the MCMC panel, change the `Chain Length` to 1 million.
+* You can rename the file for trace log and tree file to include "Strict" to distinguish them for the relaxed clock ones.
+* Save the file as `HBVStrict.xml`
+* Run the analysis with BEAST
 
 >
 > Do you have a clock rate prior in the priors panel? If so, the clock rate is estimated, and you should revisit the part where the clock is set up!
@@ -84,10 +85,10 @@ First thing to do is set up the two analyses in BEAUti, and run them in order to
 ## Setting up the relaxed clock analysis
 
 While you are waiting for BEAST to finish, it is time to set up the relaxed clock analysis. This is now straightforward:
-* in the clock model panel, change "Strict clock" to "Relaxed Clock Log Normal".
-* set the clock rate to 2e-5, and uncheck the "estimate" box.
-* in the MCMC panel, replace "strict" in the file names for trace and tree log to "tree".
-* save file as HBVUCLN.xml
+* in the clock model panel, change `Strict clock` to `Relaxed Clock Log Normal`.
+* set the clock rate to 2e-5, and uncheck the `estimate` box.
+* in the MCMC panel, replace `Strict` in the file names for trace and tree log to `UCLN`.
+* save file as `HBVUCLN.xml` **Do not click the `File > Save` menu, but `File > Save as`, otherwise the strict clock XML file will be overwritten**
 * run the analysis in BEAST
 
 Once the analyses have run, open the log file in Tracer and compare estimates and see whether the analyses substantially differ. You can also compare the trees in DensiTree.
@@ -124,7 +125,7 @@ to
 ```xml
 <run id="mcmc" spec="beast.gss.NS" chainLength="20000" particleCount="1" subChainLength="5000">
 ```
-Here the `particeCount` represents the number of active points used in nested sampling: the more points used, the more accurate the estimate, but the longer the analysis takes. The `subChainLength` is the number of MCMC samples taken to get a new point that is independent (enough) from the point that is saved. Longer lengths mean longer runs, but also more independent samples. In practice, running with different `subChainLength` is necessary to find out which length is most suitable (see [FAQ](#Nested-sampling-FAQ)).
+Here the `particleCount` represents the number of active points used in nested sampling: the more points used, the more accurate the estimate, but the longer the analysis takes. The `subChainLength` is the number of MCMC samples taken to get a new point that is independent (enough) from the point that is saved. Longer lengths mean longer runs, but also more independent samples. In practice, running with different `subChainLength` is necessary to find out which length is most suitable (see [FAQ](#Nested-sampling-FAQ)).
 * change the file names for the trace and tree log to include `NS`.
 * save the files, and run with BEAST.
 
@@ -174,12 +175,12 @@ Log file written to HBVUCLN-NS.posterior.log
 Done!
 ```
 
-As you can see, nested sampling produces estimates of the marginal likelihood as well as standard deviation estimates. At first sight, the relaxed clock has a log marginal likelihood estimate of about -12428, while the strict clock is much worse at about -12438. However, the standard deviation of both runs is about 11, so that makes these estimates indistinguishable.
+As you can see, nested sampling produces estimates of the marginal likelihood as well as standard deviation estimates. At first sight, the relaxed clock has a log marginal likelihood estimate of about -12428, while the strict clock is much worse at about -12438.  However, the standard deviation of both runs is about 11, so that makes these estimates indistinguishable. Since this is a stochastic process, the exact numbers for your run will differ, but should not be that far appart (less than 2 SDs, or about 22 log points in 95% of the time).
 
 To get more accurate estimates, the number of particles can be increased. The expected SD is sqrt(H/N) where N is the number of particles and H the information. The information H is conveniently estimated in the nested sampling run as well.
 To aim for an SD of say 2, we need to run again with N particles such that 2=sqrt(125/N), which means 4=125/N, so N=125/4 and N=32 will do. Note that the computation time of nested sampling is linear in the number of particles, so it will take about 32 times longer to run if we change the particleCount from 1 to 32 in the XML.
 
-A pre-cooked run with 32 particles can be found here: [https://github.com/rbouckaert/NS-tutorial/precooked_runs](https://github.com/rbouckaert/NS-tutorial/precooked_runs). Download the files *NS32.log and run the `NSLogAnalyser` application to analyse the results. To start the `NSLogAnalyser` from the command line, use
+A pre-cooked run with 32 particles can be found here: [https://github.com/rbouckaert/NS-tutorial/tree/master/precooked_runs](https://github.com/rbouckaert/NS-tutorial/tree/master/precooked_runs). Download the files [HBV-Strict-NS32.log](https://raw.githubusercontent.com/rbouckaert/NS-tutorial/master/precooked_runs/HBVStrict-NS32.log) and [HBVUCLN-NS32.log](https://raw.githubusercontent.com/rbouckaert/NS-tutorial/master/precooked_runs/HBVUCLN-NS32.log) and run the `NSLogAnalyser` application to analyse the results. To start the `NSLogAnalyser` from the command line, use
 ```
 applauncher NSLogAnalyser -noposterior -N 32 -log /path/to/HBVStrict-NS32.log
 applauncher NSLogAnalyser -noposterior -N 32 -log /path/to/HBVUCLN-NS32.log
@@ -217,7 +218,7 @@ freqParameter.4    0.275027 0.006716
 Done!
 ```
 
-So, that gives us a ML estimate of -12426.2 with SD of 1.89, slightly better than the 2 we thought was acceptable.
+So, that gives us a ML estimate of -12426.2 with SD of 1.89, slightly better than the 2 we aimed for, but the information is also a bit lower than we assumed (114 vs 128). Furthermore, there are posterior estimates of all the entries in the trace log. Nested sampling does not only estimate MLs and SDs, but can also provide a sample from the posterior, which can be useful for cases where MCMC has trouble with convergence. But let's not digress too much and get back to model selection.
 
 For the relaxed clock analysis, we get something like:
 
@@ -253,7 +254,6 @@ to
 ```
 * Save both files, and run with BEAST.
 -->
-
 
 
 # Nested sampling FAQ
