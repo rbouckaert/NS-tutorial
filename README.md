@@ -28,7 +28,7 @@ Note that sometimes a factor 2 is used for multiplying BFs, so when comparing BF
 	* pick the point with the lowest likelihood Lmin, and save to log file
 	* replace the point with a new point randomly sampled from the prior using an MCMC chain of `subChainLength` samples __under the condition that the likelihood is at least Lmin__
 
-So, the main parameters of the algorithm are the number of particles `N` and the `subChainLength`. `N` can be determined by starting with `N=1` and from the information of that run a target standard deviation can be determined, which gives us a formula to determine `N` (as we will see later in the tutorial). The `subChainLength` determines how independent the replacement point is from the point that was saved, and is the only parameter that needs to be determined by trial and error -- see [FAQ](#Nested-sampling-FAQ) for details.
+So, the main parameters of the algorithm are the number of particles `N` and the `subChainLength`. `N` can be determined by starting with `N=1` and from the information of that run a target standard deviation can be determined, which gives us a formula to determine `N` (as we will see later in the tutorial). The `subChainLength` determines how independent the replacement point is from the point that was saved, and is the only parameter that needs to be determined by trial and error -- see [FAQ](#nested-sampling-faq) for details.
 
 
 ----
@@ -68,7 +68,7 @@ First thing to do is set up the two analyses in BEAUti, and run them in order to
     * Uncheck menu `Mode > Automatic set clock rate`. Now the estimate entry should not be grayed out any more.
     * Uncheck the `estimate` box next to the clock rate entry.
 * In the priors panel, select `Coalescent Constant Population` as tree prior.
-* Also in the priors panel, change to `popSize` prior to `Gamma` with alpha = 0.01, beta = 100 ([Fig 2](#fig:prior)).
+* Also in the priors panel, change to `popSize` prior to `Gamma` with alpha = 0.01, beta = 100 ([Fig 2](#fig:priors)).
 * In the MCMC panel, change the `Chain Length` to 1 million.
 * You can rename the file for trace log and tree file to include "Strict" to distinguish them for the relaxed clock ones.
 * Save the file as `HBVStrict.xml`. __Do not close BEAUti just yet!__
@@ -78,18 +78,20 @@ First thing to do is set up the two analyses in BEAUti, and run them in order to
 > Do you have a clock rate prior in the priors panel? If so, the clock rate is estimated, and you should revisit the part where the clock is set up!
 >
 
-<figure>
-	<a id="fig:auto-config"></a>
-	<img style="width:80.0%;" src="figures/BEAUti-configure-tip-dates.png" alt="">
-	<figcaption>Figure 1: Configuring tip dates in BEAUti</figcaption>
-</figure>
+	
+<a name="fig:auto-config">
+<figcaption>Figure 1: Configuring tip dates in BEAUti</figcaption>
+</a>
+
+<img style="width:80.0%;" src="figures/BEAUti-configure-tip-dates.png" alt="">
 <br>
 
-<figure>
-	<a id="fig:priors"></a>
-	<img style="width:80.0%;" src="figures/BEAUti-priors.png" alt="">
-	<figcaption>Figure 2: Priors panel for strict clock analysis in BEAUti</figcaption>
-</figure>
+	
+<a name="fig:priors">
+<figcaption>Figure 2: Priors panel for strict clock analysis in BEAUti</figcaption>
+</a>
+
+<img style="width:80.0%;" src="figures/BEAUti-priors.png" alt="">
 <br>
 
 ## Setting up the relaxed clock analysis
@@ -117,11 +119,11 @@ To use nested sampling, first have to install the NS (version {{ page.nsversion 
 > Open BEAUti and navigate to **File > Manage Packages**. Select NS and then click **Install/Upgrade** ([Fig 3](#fig:install)). Then **_restart BEAUti_** to load the package.
 >  
 
-<figure>
-	<a id="fig:install"></a>
-	<img style="width:80.0%;" src="figures/install_NS.png" alt="">
-	<figcaption>Figure 3: Installing NS in the Manage Packages window in BEAUti</figcaption>
-</figure>
+<a id="fig:install">
+<figcaption>Figure 3: Installing NS in the Manage Packages window in BEAUti</figcaption>
+</a>
+
+<img style="width:80.0%;" src="figures/install_NS.png" alt="">
 <br>
 
 ## Setting up the nested sampling analyses
@@ -136,7 +138,7 @@ to
 ```xml
 <run id="mcmc" spec="beast.gss.NS" chainLength="20000" particleCount="1" subChainLength="5000">
 ```
-Here the `particleCount` represents the number of active points used in nested sampling: the more points used, the more accurate the estimate, but the longer the analysis takes. The `subChainLength` is the number of MCMC samples taken to get a new point that is independent (enough) from the point that is saved. Longer lengths mean longer runs, but also more independent samples. In practice, running with different `subChainLength` is necessary to find out which length is most suitable (see [FAQ](#Nested-sampling-FAQ)).
+Here the `particleCount` represents the number of active points used in nested sampling: the more points used, the more accurate the estimate, but the longer the analysis takes. The `subChainLength` is the number of MCMC samples taken to get a new point that is independent (enough) from the point that is saved. Longer lengths mean longer runs, but also more independent samples. In practice, running with different `subChainLength` is necessary to find out which length is most suitable (see [FAQ](#nested-sampling-faq)).
 * change the file names for the trace and tree log to include `NS` (searching for `fileName=` will get you there fastest).
 * save the files, and run with BEAST.
 
@@ -332,7 +334,7 @@ The ESSs in Tracer of log files with the posterior samples are meaningless, beca
 
 # Relevant References
 
-{% bibliography --cited --file NS-tutorial/master-refs.bib %}
+<!--{% bibliography --cited --file NS-tutorial/master-refs.bib %}-->
 
 <a name="Bouckaert2014">Remco Bouckaert, Joseph Heled, Denise Kuhnert, Tim Vaughan, Chieh-Hsi Wu, Dong Xie, Marc A Suchard, Andrew Rambaut, and Alexei J Drummond. Beast 2: a software platform for bayesian evolutionary analysis. PLoS computational biology, 10(4):e1003537, apr 2014.</a>
 
