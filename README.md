@@ -334,7 +334,7 @@ The ESSs in Tracer of log files with the posterior samples are meaningless, beca
 
 # Relevant References
 
-<!--{% bibliography --cited --file NS-tutorial/master-refs.bib %}-->
+{% bibliography --cited --file NS-tutorial/master-refs.bib %}
 
 * <a name="Bouckaert2014">Remco Bouckaert, Joseph Heled, Denise Kuhnert, Tim Vaughan, Chieh-Hsi Wu, Dong Xie, Marc A Suchard, Andrew Rambaut, and Alexei J Drummond. Beast 2: a software platform for bayesian evolutionary analysis. PLoS computational biology, 10(4):e1003537, apr 2014.</a>
 
