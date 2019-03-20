@@ -23,15 +23,15 @@ Say, we have two models, M1 and M2, and estimates of the (log) marginal likeliho
 </figure>
 <br>
 
-Note that sometimes a factor 2 is used for multiplying BFs, so when comparing BFs from different publications, be aware which definition that was used.
+Note that sometimes a factor 2 is used for multiplying BFs, so when comparing BFs from different publications, be aware which definition was used.
 
 
 **Nested sampling** is an algorithm that works as follows:
 
 * randomly sample `N` points from the prior
 * while not coverged
-	* pick the point with the lowest likelihood Lmin, and save to log file
-	* replace the point with a new point randomly sampled from the prior using an MCMC chain of `subChainLength` samples __under the condition that the likelihood is at least Lmin__
+	* pick the point with the lowest likelihood L<sub>min</sub>, and save to log file
+	* replace the point with a new point randomly sampled from the prior using an MCMC chain of `subChainLength` samples __under the condition that the likelihood is at least L<sub>min</sub>__
 
 So, the main parameters of the algorithm are the number of particles `N` and the `subChainLength`. `N` can be determined by starting with `N=1` and from the information of that run a target standard deviation can be determined, which gives us a formula to determine `N` (as we will see later in the tutorial). The `subChainLength` determines how independent the replacement point is from the point that was saved, and is the only parameter that needs to be determined by trial and error -- see [FAQ](#nested-sampling-faq) for details.
 
