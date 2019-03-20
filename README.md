@@ -16,7 +16,12 @@ Bayesian model selection is based on estimating the marginal likelihood: the ter
 
 Say, we have two models, M1 and M2, and estimates of the (log) marginal likelihood, ML1 and ML2, then we can calculate the Bayes factor, which is the fraction BF=ML1/ML2 (or in log space, the difference log(BF) = log(ML1)-log(ML2)). If BF is larger than 1, model M1 is favoured, and otherwise M2 is favoured. How much it is favoured can be found in the following table {% cite kass1995bayes --file NS-tutorial/master-refs %}:
 
-<img style="width:80.0%;" src="figures/BFs.png" alt="">
+<figure>
+	<a name="fig:bfs"></a>
+	<img style="width:80.0%;" src="figures/BFs.png" alt="">
+	<figcaption>Figure 1: Bayes factor support.</figcaption>
+</figure>
+<br>
 
 Note that sometimes a factor 2 is used for multiplying BFs, so when comparing BFs from different publications, be aware which definition that was used.
 
@@ -58,50 +63,52 @@ The most popular clock models are the strict clock model and uncorrelated relaxe
 
 ## Setting up the Strict clock analysis
 
-First thing to do is set up the two analyses in BEAUti, and run them in order to make sure there are differences in the analyses. The alignment can be downloaded here: [https://raw.githubusercontent.com/rbouckaert/NS-tutorial/master/data/HBV.nex](https://raw.githubusercontent.com/rbouckaert/NS-tutorial/master/data/HBV.nex). We will set up a model with tip dates, HKY substitution model, Coalescent prior with constant population, and a fixed clock rate. In BEAUti:
+First thing to do is set up the two analyses in BEAUti, and run them in order to make sure there are differences in the analyses. The alignment can be downloaded here: [https://raw.githubusercontent.com/rbouckaert/NS-tutorial/master/data/HBV.nex](https://raw.githubusercontent.com/rbouckaert/NS-tutorial/master/data/HBV.nex). We will set up a model with tip dates, HKY substitution model, Coalescent prior with constant population, and a fixed clock rate. 
 
-* Start a new analysis using the Standard template.
-* Import [HBV.nex](https://raw.githubusercontent.com/rbouckaert/NS-tutorial/master/data/HBV.nex) using menu `File > Import alignment`.
-* In the tip-dates panel, select `tip dates`, click `Auto configure` and select the `split on character` option, taking group 2 (see [Fig 1](#fig:auto-config)).
-* In the site model panel, select `HKY` as substitution model and leave the rest as is.
-* In the clock model panel, set the clock rate to 2e-5. Though usually, we want to estimate the rate, to speed things up for the tutorial, we fix the clock rate at that number as follows:
-    * Uncheck menu `Mode > Automatic set clock rate`. Now the estimate entry should not be grayed out any more.
-    * Uncheck the `estimate` box next to the clock rate entry.
-* In the priors panel, select `Coalescent Constant Population` as tree prior.
-* Also in the priors panel, change to `popSize` prior to `Gamma` with alpha = 0.01, beta = 100 ([Fig 2](#fig:priors)).
-* In the MCMC panel, change the `Chain Length` to 1 million.
-* You can rename the file for trace log and tree file to include "Strict" to distinguish them for the relaxed clock ones.
-* Save the file as `HBVStrict.xml`. __Do not close BEAUti just yet!__
-* Run the analysis with BEAST.
+> **In BEAUti:**
+> 
+> * Start a new analysis using the Standard template.
+> * Import [HBV.nex](https://raw.githubusercontent.com/rbouckaert/NS-tutorial/master/data/HBV.nex) using menu `File > Import alignment`.
+> * In the tip-dates panel, select `tip dates`, click `Auto configure` and select the `split on character` option, taking group 2 (see [Fig 2](#fig:auto-config)).
+> * In the site model panel, select `HKY` as substitution model and leave the rest as is.
+> * In the clock model panel, set the clock rate to 2e-5. Though usually, we want to estimate the rate, to speed things up for the tutorial, we fix the clock rate at that number as follows:
+>     * Uncheck menu `Mode > Automatic set clock rate`. Now the estimate entry should not be grayed out any more.
+>     * Uncheck the `estimate` box next to the clock rate entry.
+> * In the priors panel, select `Coalescent Constant Population` as tree prior.
+> * Also in the priors panel, change to `popSize` prior to `Gamma` with alpha = 0.01, beta = 100 ([Fig 3](#fig:priors)).
+> * In the MCMC panel, change the `Chain Length` to 1 million.
+> * You can rename the file for trace log and tree file to include "Strict" to distinguish them for the relaxed clock ones.
+> * Save the file as `HBVStrict.xml`. __Do not close BEAUti just yet!__
+> * Run the analysis with BEAST.
 
 >
-> Do you have a clock rate prior in the priors panel? If so, the clock rate is estimated, and you should revisit the part where the clock is set up!
+> **Do you have a clock rate prior in the priors panel?** If so, the clock rate is estimated, and you should revisit the part where the clock is set up!
 >
 
-	
-<a name="fig:auto-config">
-<figcaption>Figure 1: Configuring tip dates in BEAUti</figcaption>
-</a>
 
-<img style="width:80.0%;" src="figures/BEAUti-configure-tip-dates.png" alt="">
+<figure>
+	<a name="fig:auto-config"></a>
+	<img style="width:80.0%;" src="figures/BEAUti-configure-tip-dates.png" alt="">
+	<figcaption>Figure 2: Configuring tip dates in BEAUti</figcaption>
+</figure>
 <br>
 
-	
-<a name="fig:priors">
-<figcaption>Figure 2: Priors panel for strict clock analysis in BEAUti</figcaption>
-</a>
-
-<img style="width:80.0%;" src="figures/BEAUti-priors.png" alt="">
+<figure>
+	<a name="fig:priors"></a>
+	<img style="width:80.0%;" src="figures/BEAUti-priors.png" alt="">
+	<figcaption>Figure 3: Priors panel for strict clock analysis in BEAUti</figcaption>
+</figure>
 <br>
 
 ## Setting up the relaxed clock analysis
 
-While you are waiting for BEAST to finish, it is time to set up the relaxed clock analysis. This is now straightforward if BEAUti is still open (if BEAUti was closed, open BEAUti, and load the file `HBVStrict.xml` through the menu `File > Load`):
-* In the clock model panel, change `Strict clock` to `Relaxed Clock Log Normal`.
-* Set the clock rate to 2e-5, and uncheck the `estimate` box.
-* In the MCMC panel, replace `Strict` in the file names for trace and tree log to `UCLN`.
-* Save file as `HBVUCLN.xml` **Do not click the `File > Save` menu, but `File > Save as`, otherwise the strict clock XML file will be overwritten**
-* Run the analysis in BEAST
+> While you are waiting for BEAST to finish, it is time to set up the relaxed clock analysis. This is now straightforward if BEAUti is still open (if BEAUti was closed, open BEAUti, and load the file `HBVStrict.xml` through the menu `File > Load`):
+> 
+> * In the clock model panel, change `Strict clock` to `Relaxed Clock Log Normal`.
+> * Set the clock rate to 2e-5, and uncheck the `estimate` box.
+> * In the MCMC panel, replace `Strict` in the file names for trace and tree log to `UCLN`.
+> * Save file as `HBVUCLN.xml` **Do not click the `File > Save` menu, but `File > Save as`, otherwise the strict clock XML file will be overwritten**
+> * Run the analysis in BEAST
 
 Once the analyses have run, open the log file in Tracer and compare estimates and see whether the analyses substantially differ. You can also compare the trees in DensiTree.
 
@@ -116,34 +123,41 @@ If there are no substantial differences between the analysis for the question yo
 
 To use nested sampling, first have to install the NS (version {{ page.nsversion }} or above) package.
 
-> Open BEAUti and navigate to **File > Manage Packages**. Select NS and then click **Install/Upgrade** ([Fig 3](#fig:install)). Then **_restart BEAUti_** to load the package.
+> Open BEAUti and navigate to **File > Manage Packages**. Select NS and then click **Install/Upgrade** ([Fig 4](#fig:install)). Then **_restart BEAUti_** to load the package.
 >  
 
-<a id="fig:install">
-<figcaption>Figure 3: Installing NS in the Manage Packages window in BEAUti</figcaption>
-</a>
 
-<img style="width:80.0%;" src="figures/install_NS.png" alt="">
+<figure>
+	<a id="fig:install"></a>
+	<img style="width:80.0%;" src="figures/install_NS.png" alt="">
+	<figcaption>Figure 4: Installing NS in the Manage Packages window in BEAUti</figcaption>
+</figure>
 <br>
+
 
 ## Setting up the nested sampling analyses
 
-* copy the file `HBVStrict.xml` to `HBVStric-NS.xml` and 
-* copy `HBVUCLN.xml` to `HBVUCLN-NS.xml`
-* start a text editor and in both copied files, change
-```xml
-<run id="mcmc" spec="MCMC" chainLength="1000000">
-```
-to
-```xml
-<run id="mcmc" spec="beast.gss.NS" chainLength="20000" particleCount="1" subChainLength="5000">
-```
-Here the `particleCount` represents the number of active points used in nested sampling: the more points used, the more accurate the estimate, but the longer the analysis takes. The `subChainLength` is the number of MCMC samples taken to get a new point that is independent (enough) from the point that is saved. Longer lengths mean longer runs, but also more independent samples. In practice, running with different `subChainLength` is necessary to find out which length is most suitable (see [FAQ](#nested-sampling-faq)).
-* change the file names for the trace and tree log to include `NS` (searching for `fileName=` will get you there fastest).
-* save the files, and run with BEAST.
+> * copy the file `HBVStrict.xml` to `HBVStric-NS.xml` and 
+> * copy `HBVUCLN.xml` to `HBVUCLN-NS.xml`
+> * start a text editor and in both copied files, change
+> 
+> ```xml
+> <run id="mcmc" spec="MCMC" chainLength="1000000">
+> ```
+> 
+> to
+> 
+> ```xml
+> <run id="mcmc" spec="beast.gss.NS" chainLength="20000" particleCount="1" subChainLength="5000">
+> ```
+> 
+> * Here the `particleCount` represents the number of active points used in nested sampling: the more points used, the more accurate the estimate, but the longer the analysis takes. The `subChainLength` is the number of MCMC samples taken to get a new point that is independent (enough) from the point that is saved. Longer lengths mean longer runs, but also more independent samples. In practice, running with different `subChainLength` is necessary to find out which length is most suitable (see [FAQ](#nested-sampling-faq)).
+> * change the file names for the trace and tree log to include `NS` (searching for `fileName=` will get you there fastest).
+> * save the files, and run with BEAST.
 
 
 The end of the BEAST run for nested sampling with the strict clock should look something like this:
+
 ```
 Total calculation time: 34.146 seconds
 End likelihood: -202.93224422946253
@@ -270,6 +284,7 @@ to
 
 
 # Nested sampling FAQ
+<a name="nested-sampling-faq">  </a>
 
 ## The analysis prints out multiple ML estimates with their SDs. Which one to choose?
 

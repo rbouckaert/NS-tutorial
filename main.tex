@@ -68,6 +68,12 @@ log(ML1)-log(ML2)). If BF is larger than 1, model M1 is favoured, and
 otherwise M2 is favoured. How much it is favoured can be found in the
 following table \citep{kass1995bayes}:
 
+\begin{figure}[b]
+    \centering
+    \includegraphics[width=0.800000\textwidth]{figures/BFs.png}
+    \caption{Bayes factor support.}
+\end{figure}
+
 Note that sometimes a factor 2 is used for multiplying BFs, so when
 comparing BFs from different publications, be aware which definition
 that was used.
@@ -156,8 +162,10 @@ order to make sure there are differences in the analyses. The alignment
 can be downloaded here:
 \url{https://raw.githubusercontent.com/rbouckaert/NS-tutorial/master/data/HBV.nex}.
 We will set up a model with tip dates, HKY substitution model,
-Coalescent prior with constant population, and a fixed clock rate. In
-BEAUti:
+Coalescent prior with constant population, and a fixed clock rate.
+
+\begin{framed}
+\textbf{In BEAUti:}
 
 \begin{itemize}
 
@@ -171,7 +179,7 @@ BEAUti:
   In the tip-dates panel, select \lstinline!tip dates!, click
   \lstinline!Auto configure! and select the
   \lstinline!split on character! option, taking group 2 (see
-  \protect\hyperlink{fig:auto-config}{Fig 1}).
+  \protect\hyperlink{fig:auto-config}{Fig 2}).
 \item
   In the site model panel, select \lstinline!HKY! as substitution model
   and leave the rest as is.
@@ -194,7 +202,7 @@ BEAUti:
 \item
   Also in the priors panel, change to \lstinline!popSize! prior to
   \lstinline!Gamma! with alpha = 0.01, beta = 100
-  (\protect\hyperlink{fig:priors}{Fig 2}).
+  (\protect\hyperlink{fig:priors}{Fig 3}).
 \item
   In the MCMC panel, change the \lstinline!Chain Length! to 1 million.
 \item
@@ -206,32 +214,53 @@ BEAUti:
 \item
   Run the analysis with BEAST.
 \end{itemize}
-
-\begin{framed}
-Do you have a clock rate prior in the priors panel? If so, the clock
-rate is estimated, and you should revisit the part where the clock is
-set up!
 \end{framed}
 
-Figure 1: Configuring tip dates in BEAUti
+\begin{framed}
+\textbf{Do you have a clock rate prior in the priors panel?} If so, the
+clock rate is estimated, and you should revisit the part where the clock
+is set up!
+\end{framed}
 
-Figure 2: Priors panel for strict clock analysis in BEAUti
+\begin{figure}
+    \centering
+    \includegraphics[width=0.800000\textwidth]{figures/BEAUti-configure-tip-dates.png}
+    \caption{Configuring tip dates in BEAUti}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.800000\textwidth]{figures/BEAUti-priors.png}
+    \caption{Priors panel for strict clock analysis in BEAUti}
+\end{figure}
 
 \subsection{Setting up the relaxed clock
 analysis}\label{setting-up-the-relaxed-clock-analysis}
 
+\begin{framed}
 While you are waiting for BEAST to finish, it is time to set up the
 relaxed clock analysis. This is now straightforward if BEAUti is still
 open (if BEAUti was closed, open BEAUti, and load the file
-\lstinline!HBVStrict.xml! through the menu \lstinline!File > Load!): *
-In the clock model panel, change \lstinline!Strict clock! to
-\lstinline!Relaxed Clock Log Normal!. * Set the clock rate to 2e-5, and
-uncheck the \lstinline!estimate! box. * In the MCMC panel, replace
-\lstinline!Strict! in the file names for trace and tree log to
-\lstinline!UCLN!. * Save file as \lstinline!HBVUCLN.xml! \textbf{Do not
-click the \lstinline!File > Save! menu, but \lstinline!File > Save as!,
-otherwise the strict clock XML file will be overwritten} * Run the
-analysis in BEAST
+\lstinline!HBVStrict.xml! through the menu \lstinline!File > Load!):
+
+\begin{itemize}
+
+\item
+  In the clock model panel, change \lstinline!Strict clock! to
+  \lstinline!Relaxed Clock Log Normal!.
+\item
+  Set the clock rate to 2e-5, and uncheck the \lstinline!estimate! box.
+\item
+  In the MCMC panel, replace \lstinline!Strict! in the file names for
+  trace and tree log to \lstinline!UCLN!.
+\item
+  Save file as \lstinline!HBVUCLN.xml! \textbf{Do not click the
+  \lstinline!File > Save! menu, but \lstinline!File > Save as!,
+  otherwise the strict clock XML file will be overwritten}
+\item
+  Run the analysis in BEAST
+\end{itemize}
+\end{framed}
 
 Once the analyses have run, open the log file in Tracer and compare
 estimates and see whether the analyses substantially differ. You can
@@ -260,16 +289,23 @@ page.nsversion \}\} or above) package.
 \begin{framed}
 Open BEAUti and navigate to \textbf{File \textgreater{} Manage
 Packages}. Select NS and then click \textbf{Install/Upgrade}
-(\protect\hyperlink{fig:install}{Fig 3}). Then \textbf{\emph{restart
+(\protect\hyperlink{fig:install}{Fig 4}). Then \textbf{\emph{restart
 BEAUti}} to load the package.
 \end{framed}
 
-Figure 3: Installing NS in the Manage Packages window in BEAUti
+\begin{figure}
+    \centering
+    \includegraphics[width=0.800000\textwidth]{figures/install_NS.png}
+    \caption{Installing NS in the Manage Packages window in BEAUti}
+    \label{fig:install}
+\end{figure}
 
 \subsection{Setting up the nested sampling
 analyses}\label{setting-up-the-nested-sampling-analyses}
 
+\begin{framed}
 \begin{itemize}
+
 \item
   copy the file \lstinline!HBVStrict.xml! to \lstinline!HBVStric-NS.xml!
   and
@@ -277,17 +313,21 @@ analyses}\label{setting-up-the-nested-sampling-analyses}
   copy \lstinline!HBVUCLN.xml! to \lstinline!HBVUCLN-NS.xml!
 \item
   start a text editor and in both copied files, change
+\end{itemize}
 
 \begin{lstlisting}[language=XML]
 <run id="mcmc" spec="MCMC" chainLength="1000000">
 \end{lstlisting}
 
-  to
+to
 
 \begin{lstlisting}[language=XML]
 <run id="mcmc" spec="beast.gss.NS" chainLength="20000" particleCount="1" subChainLength="5000">
 \end{lstlisting}
 
+\begin{itemize}
+
+\item
   Here the \lstinline!particleCount! represents the number of active
   points used in nested sampling: the more points used, the more
   accurate the estimate, but the longer the analysis takes. The
@@ -304,6 +344,7 @@ analyses}\label{setting-up-the-nested-sampling-analyses}
 \item
   save the files, and run with BEAST.
 \end{itemize}
+\end{framed}
 
 The end of the BEAST run for nested sampling with the strict clock
 should look something like this:
