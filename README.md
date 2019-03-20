@@ -2,7 +2,7 @@
 author: Remco Bouckaert
 level: Intermediate
 title: Model selection
-subtitle: with nested sampling
+subtitle: Model selection with nested sampling
 beastversion: 2.5.2
 nsversion: 1.0.3
 ---
