@@ -29,7 +29,7 @@ Note that sometimes a factor 2 is used for multiplying BFs, so when comparing BF
 **Nested sampling** is an algorithm that works as follows:
 
 * randomly sample `N` points from the prior
-* while not coverged
+* while not converged
 	* pick the point with the lowest likelihood L<sub>min</sub>, and save to log file
 	* replace the point with a new point randomly sampled from the prior using an MCMC chain of `subChainLength` samples __under the condition that the likelihood is at least L<sub>min</sub>__
 
@@ -319,7 +319,9 @@ The parallel implementation makes it possible to run many particles in parallel,
 
 The NS package has a `NSLogAnalyser` application that you can run via the menu `File/Launch apps` in BEAUti -- a window pops up where you select the `NSLogAnalyser`, and a dialog shows you various options to fill in. You can also run it from the command line on OS X or Linux using
 
-`/path/to/beast/bin/applauncher NSLogAnalyser -N 1 -log  xyz.log`
+```
+/path/to/beast/bin/applauncher NSLogAnalyser -N 1 -log  xyz.log
+```
 
 where the argument after `N` is the `particleCount` you specified in the XML, and `xyz.log` the trace log produced by the NS run.
 
@@ -345,7 +347,7 @@ The ESSs in Tracer of log files with the posterior samples are meaningless, beca
 - Nested sampling website and documentation: [https://github.com/BEAST2-Dev/nested-sampling](https://github.com/BEAST2-Dev/nested-sampling)
 - Join the BEAST user discussion: [http://groups.google.com/group/beast-users](http://groups.google.com/group/beast-users) 
 
-----
+
 
 # Relevant References
 
