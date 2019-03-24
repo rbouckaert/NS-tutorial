@@ -4,7 +4,7 @@ level: Intermediate
 title: Model selection
 subtitle: Model selection with nested sampling
 beastversion: 2.5.2
-nsversion: 1.0.3
+nsversion: 1.0.4
 ---
 
 
@@ -136,6 +136,24 @@ To use nested sampling, first have to install the NS (version {{ page.nsversion 
 
 
 ## Setting up the nested sampling analyses
+
+You can convert an MCMC analysis to an NS analysis using the `MCMC2NS` tool that comes with the NS package. 
+
+> * launch the applauncher via the `File > Launch apps` menu in BEAUti
+> * in the dialog that pops up, select the `MCMC to NS converter` app, and click `Launch`
+> * select the XML file with strict clock analysis, set `HBVStrict-NS.xml` as output file in the same directory.
+> * change settings as in the figure below
+> * click `OK`, and the file with the nested sampling analysis will be created
+> * repeat the process for the relaxed clock analysis
+
+<figure>
+	<a name="fig:priors"></a>
+	<img style="width:80.0%;" src="figures/MCMC2NS.png" alt="">
+	<figcaption>Figure 4: converting an MCMC analysis to an NS analysis using the applauncher</figcaption>
+</figure>
+<br>
+
+Alternatively, you can do this in a text editor as follows:
 
 > * copy the file `HBVStrict.xml` to `HBVStric-NS.xml` and 
 > * copy `HBVUCLN.xml` to `HBVUCLN-NS.xml`
